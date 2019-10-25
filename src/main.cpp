@@ -16,6 +16,5 @@ void loop()
   Serial.print("Summ is = ");
   Serial.print(c);
   Serial.print("\n");
-  delay(5);
   delay(1000);
 }
