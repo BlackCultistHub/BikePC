@@ -5,15 +5,12 @@ void setup()
 {
   Serial.begin (9600);
   Serial.println();
-  WiFi.begin("InterZet610 (5GHz)", "0987654321000");
-  Serial.print("Connecting");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
+  WiFi.begin("BlackCultistNetwork", "0987654321000");
+  Serial.print("Connecting...");
+  delay(3000);
   Serial.println();
   Serial.print("Connected, IP address: ");
+  delay(1000);
   Serial.println(WiFi.localIP());
 }
 
