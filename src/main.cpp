@@ -1,21 +1,21 @@
 #include <Arduino.h>
+#include <ESP8266WiFi.h>
 
 void setup() 
 {
   Serial.begin (9600);
+  Serial.println();
+  WiFi.begin("BlackCultistNetwork", "0987654321000");
+  Serial.print("Connecting...");
+  delay(3000);
+  Serial.println();
+  Serial.print("Connected, IP address: ");
+  delay(1000);
+  Serial.println(WiFi.localIP());
 }
-
-int a = 10,
-      b = 5;
 
 void loop() 
 {
   Serial.print("Hello world. This is test:\n\t");
-  Serial.print("a = 10, b = 5\n\t");
-  int c = a + b;
-  Serial.print("Summ is = ");
-  Serial.print(c);
-  Serial.print("\n");
-  delay(5);
   delay(1000);
 }
