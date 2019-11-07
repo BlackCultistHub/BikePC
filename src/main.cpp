@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <Adafruit_GFX.h>      // include Adafruit graphics library
 #include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
  
@@ -14,7 +13,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 float p = 3.1415926;
  
 //FUNCS BEGIN
-void testlines(uint16_t color) {
+/*void testlines(uint16_t color) {
   tft.fillScreen(ST7735_BLACK);
   for (int16_t x=0; x < tft.width(); x+=6) {
     tft.drawLine(0, 0, x, tft.height()-1, color);
@@ -193,17 +192,12 @@ void mediabuttons() {
   tft.fillRoundRect(69, 98, 20, 45, 5, ST7735_RED);
   // play color
   tft.fillTriangle(42, 20, 42, 60, 90, 40, ST7735_GREEN);
-}
+}*/
 //FUNCS END
 
-char* concat(char*, char*);
+//char* concat(char*, char*);
 
-#define BANKHEIGHT 20
-int rnd;
-char temp[12];
-char* bank[BANKHEIGHT];
-
-void setup(void) 
+void setup() 
 {
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
  
@@ -255,35 +249,42 @@ void setup(void)
   delay(500);
  
   delay(1000);*/
+  tft.drawRect(0,0,128,25,ST7735_WHITE);
+  tft.drawRect(0,25,128,80,ST7735_WHITE);
+  tft.drawRect(0,105,128,55,ST7735_WHITE);
   tft.setTextColor(ST7735_WHITE);
-  tft.setCursor(0, 0);
-  for (int i = 0; i < BANKHEIGHT; i++)
-    {
-        rnd = rand() % 100+1;
-        sprintf(temp, "%d", rnd);
-        bank[i] = concat("Random numb = ", temp);
-        tft.println(bank[i]);
-        delay(1000);
-    }
+  tft.setCursor(5, 5);
+  tft.setTextSize(1);
+  tft.println("12:00");
+  tft.setTextSize(0);
+  tft.setCursor(5, 15);
+  tft.println("01.10.19");
+  tft.setCursor(105,5);
+  tft.print("90%");
+  tft.setTextSize(5);
+  tft.setCursor(20,50);
+  tft.print("19");
+  tft.setTextSize(1);
+  tft.println(" km/h");
+  tft.setCursor(5, 110);
+  tft.setTextSize(2);
+  tft.print("o 12'000");
+  tft.setTextSize(1);
+  tft.println(" rpm");
+  tft.setTextSize(2);
+  tft.setCursor(5, 140);
+  tft.print("H 90");
+  tft.setTextSize(1);
+  tft.println(" b/min");
 }
-
+/*Need time/date, pulse, S, S per trip, cadence, speed*/
 void loop() 
 {
-    rnd = rand() % 100+1;
-    sprintf(temp, "%d", rnd);
-    for(int i = 0; i < BANKHEIGHT-1; i++)
-        bank[i] = bank[i+1];
-    bank[BANKHEIGHT-1] = concat("Random numb = ", temp);
-    tft.fillScreen(ST7735_BLACK);
-    tft.setCursor(0, 0);
-    for (int i=0; i < BANKHEIGHT; i++)
-        tft.println(bank[i]);
-    delay(1000);
+    
 }
 
-char* concat(char *s1, char *s2) 
+/*char* concat(char *s1, char *s2) 
 {
-
     size_t len1 = strlen(s1);
     size_t len2 = strlen(s2);                      
     char *result = (char*)malloc(len1 + len2 + 1);
@@ -292,4 +293,4 @@ char* concat(char *s1, char *s2)
     memcpy(result, s1, len1);
     memcpy(result + len1, s2, len2 + 1);    
     return result;
-}
+}*/
