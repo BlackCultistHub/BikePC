@@ -12,10 +12,11 @@ void setup()
   Serial.print("Connected, IP address: ");
   delay(1000);
   Serial.println(WiFi.localIP());
+  Serial.println("Hello world. This is test.");
 }
 
 void loop() 
 {
-  Serial.print("Hello world. This is test:\n\t");
+  Serial.printf("Ip: %s\n", WiFi.localIP().toString().c_str());
   delay(1500);
 }
