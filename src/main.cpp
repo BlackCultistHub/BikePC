@@ -14,7 +14,7 @@
 // MOSI(DIN) ---> NodeMCU pin D7 (GPIO13)
 
 //***********[ Predefined Values ]***********
-#define WIFI_SSID "InterZet610 (5GHz)"
+#define WIFI_SSID "InerZet610 (5GHz)"
 #define WIFI_PASSWORD "0987654321000"
 
 //***********[ Object Inits ]***********
@@ -31,15 +31,18 @@ void setup(void)
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
   tft.fillScreen(ST7735_BLACK);
   delay(500);
-  tft.printf("Connecting to\n%s", WIFI_SSID);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  delay(3000);
-  /*while (WiFi.status() != WL_CONNECTED)
+  int wifis;
+  wifis = WiFi.scanNetworks();
+  tft.printf("Found %d nets.\n", wifis);
+  tft.printf("Connecting to\n%s", "InerZet610 (2.4GHz)");
+  WiFi.begin("InerZet610 (2.4GHz)", "0987654321000");
+  //delay(3000);
+  while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
     tft.print(".");
-  }*/
-  tft.println("Сonnected.");
+  }
+  tft.println(" connected.");
   server.begin();
   tft.printf("Web server started, open %s in a web browser\n", WiFi.localIP().toString().c_str());
   /* tft.drawRect(0,0,128,25,ST7735_WHITE);
