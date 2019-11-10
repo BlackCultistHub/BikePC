@@ -98,11 +98,11 @@ void loop(void)
         }
       }
     }
-    delay(10); // give the web browser time to receive the data
+    delay(1000); // give the web browser time to receive the data
+    // close the connection:
+    client.stop();
+    tft.println("[Client disonnected]");
   }
-  // close the connection:
-  client.stop();
-  tft.println("[Client disonnected]");
   refresh(&tft);
 }
 
