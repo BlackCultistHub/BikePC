@@ -3,7 +3,7 @@
 #include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
 #include <ESP8266WiFi.h>
 //#include <WiFiClient.h>
-//#include <ESP8266WebServer.h>
+#include <ESP8266WebServer.h>
  
 //***********[ ST7735 TFT module connections ]***********
 #define TFT_RST   D4     // TFT RST pin is connected to NodeMCU pin D4 (GPIO2)
@@ -14,8 +14,8 @@
 // MOSI(DIN) ---> NodeMCU pin D7 (GPIO13)
 
 //***********[ Predefined Values ]***********
-#define WIFI_SSID "InerZet610 (5GHz)"
-#define WIFI_PASSWORD "0987654321000"
+const char* ssid = "InterZet610_2.4";
+const char* password = "0987654321000";
 
 //***********[ Object Inits ]***********
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST); //tft screen object
@@ -31,20 +31,21 @@ void setup(void)
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
   tft.fillScreen(ST7735_BLACK);
   delay(500);
-  int wifis;
-  wifis = WiFi.scanNetworks();
-  tft.printf("Found %d nets.\n", wifis);
-  tft.printf("Connecting to\n%s", "InerZet610 (2.4GHz)");
-  WiFi.begin("InerZet610 (2.4GHz)", "0987654321000");
-  //delay(3000);
-  while (WiFi.status() != WL_CONNECTED)
+  tft.printf("Connecting to\n%s...\n", ssid);
+  WiFi.persistent(false);
+  WiFi.disconnect(true);
+  WiFi.begin(ssid, password);
+  delay(1000);
+  /*while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
     tft.print(".");
-  }
-  tft.println(" connected.");
+  }*/
+  tft.println("Connected.");
   server.begin();
-  tft.printf("Web server started, open %s in a web browser\n", WiFi.localIP().toString().c_str());
+  tft.print("Web server started,\nlocal ip is: ");
+  delay(5500);
+  tft.println(WiFi.localIP().toString().c_str());
   /* tft.drawRect(0,0,128,25,ST7735_WHITE);
   tft.drawRect(0,25,128,80,ST7735_WHITE);
   tft.drawRect(0,105,128,55,ST7735_WHITE);
@@ -97,12 +98,11 @@ void loop(void)
         }
       }
     }
-    delay(1); // give the web browser time to receive the data
-
-    // close the connection:
-    client.stop();
-    tft.println("[Client disonnected]");
+    delay(10); // give the web browser time to receive the data
   }
+  // close the connection:
+  client.stop();
+  tft.println("[Client disonnected]");
   refresh(&tft);
 }
 
@@ -112,12 +112,12 @@ String prepareHtmlPage()
   String htmlPage =
      String("HTTP/1.1 200 OK\r\n") +
             "Content-Type: text/html\r\n" +
-            "Connection: close\r\n" +  // the connection will be closed after completion of the response
+            "Connection: keep-alive\r\n" +  // the connection will be closed after completion of the response
             "Refresh: 5\r\n" +  // refresh the page automatically every 5 sec
             "\r\n" +
             "<!DOCTYPE HTML>" +
             "<html>" +
-            "Random Value:  " + String(rand()%100+1) +
+            "Ret Value:  HELLO" +
             "</html>" +
             "\r\n";
   return htmlPage;
@@ -125,8 +125,8 @@ String prepareHtmlPage()
 
 void refresh(Adafruit_ST7735* screen)
 {
-  screen->print("[REFRESH IN 3s]");
-  delay(3000);
+  screen->print("[REFRESH IN 7s]");
+  delay(7000);
   screen->fillScreen(ST7735_BLACK);
   screen->setCursor(0,0);
 }
