@@ -16,10 +16,11 @@
 //***********[ Predefined Values ]***********
 const char* ssid = "InterZet610_2.4";
 const char* password = "0987654321000";
+String page = "";
 
 //***********[ Object Inits ]***********
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST); //tft screen object
-WiFiServer server(80);
+ESP8266WebServer server(80);
 
 //***********[ Function Prototypes ]***********
 String prepareHtmlPage();
@@ -28,6 +29,7 @@ void refresh(Adafruit_ST7735*);
 //***********[ Inits and One-Time Run ]***********
 void setup(void) 
 {
+  page += String("<h1>ESP8266 Web Server</h1>\n");
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
   tft.fillScreen(ST7735_BLACK);
   delay(500);
@@ -45,6 +47,7 @@ void setup(void)
   server.begin();
   tft.print("Web server started,\nlocal ip is: ");
   delay(5500);
+  
   tft.println(WiFi.localIP().toString().c_str());
   /* tft.drawRect(0,0,128,25,ST7735_WHITE);
   tft.drawRect(0,25,128,80,ST7735_WHITE);
@@ -73,12 +76,21 @@ void setup(void)
   tft.print("H 90");
   tft.setTextSize(1);
   tft.println(" b/min"); */
+  server.on("/", []()
+  {
+    server.send(200, "text/html", String(page)+"Waiting for params.\n");
+  });
+  server.on("/param1", []()
+  {
+    server.send(200, "text/html", String(page)+"Random number is: "+rand()%100+1+"\n");
+  });
 }
 
 //***********[ Inf Loop ]***********
 void loop(void) 
 {
-  WiFiClient client = server.available();
+  server.handleClient();
+  /*WiFiClient client = server.available();
   // wait for a client (web browser) to connect
   if (client)
   {
@@ -103,7 +115,7 @@ void loop(void)
     client.stop();
     tft.println("[Client disonnected]");
   }
-  refresh(&tft);
+  refresh(&tft);*/
 }
 
 //***********[ Function Definitions ]***********
