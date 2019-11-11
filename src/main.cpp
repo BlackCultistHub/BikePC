@@ -1,8 +1,7 @@
-#include <Arduino.h>
-#include <Adafruit_GFX.h>      // include Adafruit graphics library
+//#include <Arduino.h>
+//#include <Adafruit_GFX.h>      // include Adafruit graphics library
 #include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
 #include <ESP8266WiFi.h>
-//#include <WiFiClient.h>
 #include <ESP8266WebServer.h>
  
 //***********[ ST7735 TFT module connections ]***********
@@ -13,38 +12,53 @@
 // SCK (CLK) ---> NodeMCU pin D5 (GPIO14)
 // MOSI(DIN) ---> NodeMCU pin D7 (GPIO13)
 
+//***********[ Defines ]***********
+#define MAX_DATA_ARGUMENT_AMOUNT 32
+
 //***********[ Predefined Values ]***********
 const char* ssid = "InterZet610_2.4";
 const char* password = "0987654321000";
+String page = "";
+String args[MAX_DATA_ARGUMENT_AMOUNT];
+String argVals[MAX_DATA_ARGUMENT_AMOUNT];
+int argLen = 0;
+bool update = false;
+String temp;
 
 //***********[ Object Inits ]***********
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST); //tft screen object
-WiFiServer server(80);
+ESP8266WebServer server(80);
 
 //***********[ Function Prototypes ]***********
 String prepareHtmlPage();
 void refresh(Adafruit_ST7735*);
+void handler404();
+void handlerIndex();
+void handlerData();
 
 //***********[ Inits and One-Time Run ]***********
 void setup(void) 
 {
+  Serial.begin(9600);
+  delay(10);
+  Serial.println("");
+  page += String("<h1>ESP8266 Web Server</h1>\n");
   tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
   tft.fillScreen(ST7735_BLACK);
   delay(500);
-  tft.printf("Connecting to\n%s...\n", ssid);
+  tft.printf("Connecting to\n%s\n", ssid);
   WiFi.persistent(false);
   WiFi.disconnect(true);
   WiFi.begin(ssid, password);
-  delay(1000);
-  /*while (WiFi.status() != WL_CONNECTED)
+  while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
     tft.print(".");
-  }*/
-  tft.println("Connected.");
+  }
+  tft.println("\nConnected.");
   server.begin();
-  tft.print("Web server started,\nlocal ip is: ");
-  delay(5500);
+  tft.print("Web server started,\nlocal ip is:\n");
+  delay(1000);
   tft.println(WiFi.localIP().toString().c_str());
   /* tft.drawRect(0,0,128,25,ST7735_WHITE);
   tft.drawRect(0,25,128,80,ST7735_WHITE);
@@ -73,56 +87,39 @@ void setup(void)
   tft.print("H 90");
   tft.setTextSize(1);
   tft.println(" b/min"); */
+  server.onNotFound(handler404);
+  server.on("/", handlerIndex);
+  server.on("/data", handlerData);
 }
 
 //***********[ Inf Loop ]***********
 void loop(void) 
 {
-  WiFiClient client = server.available();
-  // wait for a client (web browser) to connect
-  if (client)
+  server.handleClient();
+  if (update)
   {
-    tft.println("\n[Client connected]");
-    while (client.connected())
+    String message;
+        tft.fillScreen(ST7735_BLACK);
+    tft.setCursor(0,0);
+    tft.println("List of args:");
+    
+    for (uint8_t i = 0; i < argLen; i++)
+      message += args[i]+" = "+argVals[i]+"\n";
+    message += "List of -||- +1:\n";
+    for (uint8_t i = 0; i < argLen; i++)
     {
-      // read line by line what the client (web browser) is requesting
-      if (client.available())
-      {
-        String line = client.readStringUntil('\r');
-        tft.print(line);
-        // wait for end of client's request, that is marked with an empty line
-        if (line.length() == 1 && line[0] == '\n')
-        {
-          client.println(prepareHtmlPage());
-          break;
-        }
-      }
+      int len = argVals[i].length();
+      char temp[len+1];
+      strcpy(temp, argVals[i].c_str());
+      message += args[i]+" = "+(atoi(temp)+1)+"\n";
     }
-    delay(1000); // give the web browser time to receive the data
-    // close the connection:
-    client.stop();
-    tft.println("[Client disonnected]");
+    tft.print(message);
+    update = !update;
   }
-  refresh(&tft);
+  delay(1);
 }
 
 //***********[ Function Definitions ]***********
-String prepareHtmlPage()
-{
-  String htmlPage =
-     String("HTTP/1.1 200 OK\r\n") +
-            "Content-Type: text/html\r\n" +
-            "Connection: keep-alive\r\n" +  // the connection will be closed after completion of the response
-            "Refresh: 5\r\n" +  // refresh the page automatically every 5 sec
-            "\r\n" +
-            "<!DOCTYPE HTML>" +
-            "<html>" +
-            "Ret Value:  HELLO" +
-            "</html>" +
-            "\r\n";
-  return htmlPage;
-}
-
 void refresh(Adafruit_ST7735* screen)
 {
   screen->print("[REFRESH IN 7s]");
@@ -131,60 +128,43 @@ void refresh(Adafruit_ST7735* screen)
   screen->setCursor(0,0);
 }
 
-//EXAMPLE FUNCS BEGIN
-/*
-void testdrawtext(char *text, uint16_t color) {
-  tft.setCursor(0, 0);
-  tft.setTextColor(color);
-  tft.setTextWrap(true);
-  tft.print(text);
+//***********[ Handlers ]***********
+void handler404()
+{
+  String msg = String("<h1>404 Not Found.</h1><br>")+
+                      "URI: "+server.uri()+"<br>"+
+                      "Method: "+((server.method() == HTTP_GET)?"GET":"POST")+"<br>"
+                      "Arguments: "+server.args()+"<br>";
+  for (uint8_t i = 0; i < server.args(); i++)
+    msg += " "+server.argName(i)+": "+server.arg(i)+"<br>";
+  server.send(404, "text/html", msg);
 }
-void testfastlines(uint16_t color1, uint16_t color2) {
-  tft.fillScreen(ST7735_BLACK);
-  for (int16_t y=0; y < tft.height(); y+=5) {
-    tft.drawFastHLine(0, y, tft.width(), color1);
+
+void handlerIndex()
+{
+  String msg = String("<h1>Hello! ESP8266.</h1><br>");
+  server.send(200, "text/html", msg);
+}
+
+void handlerData()
+{
+  for (uint8_t i = 0; i < MAX_DATA_ARGUMENT_AMOUNT; i++)
+  {
+    args[i] = "0";
+    argVals[i] = "0";
   }
-  for (int16_t x=0; x < tft.width(); x+=5) {
-    tft.drawFastVLine(x, 0, tft.height(), color2);
+  for(uint8_t i = 0; i < server.args(); i++)
+  {
+    args[i] = server.argName(i);
+    argVals[i] = server.arg(i);
   }
+  argLen = server.args();
+  String msg = String("<h1>Hello! ESP8266.<h1><br>")+
+                      "Data recieve completed.<br>"+
+                      "Recieved "+server.args()+" arguments.<br>"+
+                      "Argument list:<br>";
+  for(uint8_t i = 0; i < server.args(); i++)
+    msg += (i+1)+". "+server.argName(i)+": "+server.arg(i)+"<br>";
+  update = true;
+  server.send(200, "text/html", msg);
 }
-void tftPrintTest() {
-  tft.setTextWrap(false);
-  tft.fillScreen(ST7735_BLACK);
-  tft.setCursor(0, 30);
-  tft.setTextColor(ST7735_RED);
-  tft.setTextSize(1);
-  tft.println("Hello World!");
-  tft.setTextColor(ST7735_YELLOW);
-  tft.setTextSize(2);
-  tft.println("Hello World!");
-  tft.setTextColor(ST7735_GREEN);
-  tft.setTextSize(3);
-  tft.println("Hello World!");
-  tft.setTextColor(ST7735_BLUE);
-  tft.setTextSize(4);
-  tft.print(1234.567);
-  delay(1500);
-  tft.setCursor(0, 0);
-  tft.fillScreen(ST7735_BLACK);
-  tft.setTextColor(ST7735_WHITE);
-  tft.setTextSize(0);
-  tft.println("Hello World!");
-  tft.setTextSize(1);
-  tft.setTextColor(ST7735_GREEN);
-  tft.print(p, 6);
-  tft.println(" Want pi?");
-  tft.println(" ");
-  tft.print(8675309, HEX); // print 8,675,309 out in HEX!
-  tft.println(" Print HEX!");
-  tft.println(" ");
-  tft.setTextColor(ST7735_WHITE);
-  tft.println("Sketch has been");
-  tft.println("running for: ");
-  tft.setTextColor(ST7735_MAGENTA);
-  tft.print(millis() / 1000);
-  tft.setTextColor(ST7735_WHITE);
-  tft.print(" seconds.");
-}
-*/
-//FUNCS END
