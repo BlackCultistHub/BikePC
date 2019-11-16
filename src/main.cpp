@@ -15,6 +15,9 @@
 //***********[ Defines ]***********
 #define MAX_DATA_ARGUMENT_AMOUNT 32
 
+//**********[ Class ]*************
+
+
 //***********[ Predefined Values ]***********
 const char* ssid = "InterZet610_2.4";
 const char* password = "0987654321000";
@@ -27,10 +30,9 @@ String temp;
 
 //***********[ Object Inits ]***********
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST); //tft screen object
-ESP8266WebServer server(80);
+ESP8266WebServer server(8080);
 
 //***********[ Function Prototypes ]***********
-String prepareHtmlPage();
 void refresh(Adafruit_ST7735*);
 void handler404();
 void handlerIndex();
@@ -60,7 +62,9 @@ void setup(void)
   tft.print("Web server started,\nlocal ip is:\n");
   delay(1000);
   tft.println(WiFi.localIP().toString().c_str());
-  /* tft.drawRect(0,0,128,25,ST7735_WHITE);
+  //SCREEN INIT
+  tft.fillScreen(ST7735_BLACK);
+  tft.drawRect(0,0,128,25,ST7735_WHITE);
   tft.drawRect(0,25,128,80,ST7735_WHITE);
   tft.drawRect(0,105,128,55,ST7735_WHITE);
   tft.setTextColor(ST7735_WHITE);
@@ -86,7 +90,8 @@ void setup(void)
   tft.setCursor(5, 140);
   tft.print("H 90");
   tft.setTextSize(1);
-  tft.println(" b/min"); */
+  tft.println(" b/min");
+  //HANDLERS
   server.onNotFound(handler404);
   server.on("/", handlerIndex);
   server.on("/data", handlerData);
@@ -99,21 +104,22 @@ void loop(void)
   if (update)
   {
     String message;
-        tft.fillScreen(ST7735_BLACK);
-    tft.setCursor(0,0);
-    tft.println("List of args:");
+    //tft.fillScreen(ST7735_BLACK);
+    //tft.setCursor(0,0);
+    //tft.printf("Client IP:\n%s\n", server.client().remoteIP().toString().c_str());
+    //tft.println("List of args:");
     
     for (uint8_t i = 0; i < argLen; i++)
       message += args[i]+" = "+argVals[i]+"\n";
-    message += "List of -||- +1:\n";
+    /*message += "List of -||- +1:\n";
     for (uint8_t i = 0; i < argLen; i++)
     {
       int len = argVals[i].length();
       char temp[len+1];
       strcpy(temp, argVals[i].c_str());
       message += args[i]+" = "+(atoi(temp)+1)+"\n";
-    }
-    tft.print(message);
+    }*/
+    //tft.print(message);
     update = !update;
   }
   delay(1);
