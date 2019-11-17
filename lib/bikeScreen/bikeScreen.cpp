@@ -32,52 +32,79 @@ void BikeScreen::drawBattery(uint8_t charge)
     this->setCursor(_batt_x, _batt_y);
     this->print(charge);
     this->print("%");
-    //print icon
+    //print icon green
+    this->fillRect(_batt_x+20, _batt_y-2, 9, 12, ST7735_GREEN);
+    this->drawRect(_batt_x+22, _batt_y-4, 5, 2, ST7735_GREEN);
+    //delay(3000);
+    //print charge
+    this->fillRect(_batt_x+21, _batt_y-1, 7, 10, ST7735_BLACK);
+    this->drawRect(_batt_x+20, _batt_y-2, 9, 12, ST7735_YELLOW);
+    this->drawRect(_batt_x+22, _batt_y-4, 5, 2, ST7735_YELLOW);
+    uint16_t x[] = {121, 120, 119, 118, 120, 119, 118},
+            y[] = {9, 10, 11, 12, 14, 15, 16};
+    for (uint8_t i = 0; i < 7; i++)
+        this->drawPixel(x[i], y[i], ST7735_YELLOW);
+    this->drawLine(117, 13, 121, 13, ST7735_YELLOW);
+    //delay(3000);
+    //print low-charge
+    this->fillRect(_batt_x+21, _batt_y-1, 7, 10, ST7735_BLACK);
+    this->drawRect(_batt_x+20, _batt_y-2, 9, 12, ST7735_RED);
+    this->drawRect(_batt_x+22, _batt_y-4, 5, 2, ST7735_RED);
+    this->drawLine(_batt_x+21, _batt_y+7, _batt_x+27, _batt_y+7, ST7735_RED);
+    this->drawLine(_batt_x+24, _batt_y, _batt_x+24, _batt_y+3, ST7735_RED);
+    this->drawPixel(_batt_x+24, _batt_y+5, ST7735_RED);
 }
 void BikeScreen::drawSpeed(uint8_t speed)
 {
     this->setTextColor(ST7735_WHITE);
+    this->setTextSize(3);
     this->setCursor(_speed_x, _speed_y);
-    this->setTextSize(2);
     this->print(speed);
-    this->setTextSize(1);
-    this->print(" km/h");
+    this->setTextSize(2);
+    this->setCursor(_speed_x+45, _speed_y+5);
+    this->print("km/h");
 }
-void BikeScreen::drawCadence(uint32_t rpm)
+void BikeScreen::drawCadence(uint16_t rpm)
 {
     this->setTextColor(ST7735_WHITE);
+    this->setTextSize(3);
     this->setCursor(_cadence_x, _cadence_y);
-    this->setTextSize(2);
     this->print(rpm);
     this->setTextSize(1);
-    this->print(" rpm");
+    this->setCursor(_cadence_x+60, _cadence_y+13);
+    this->print("rpm");
+    //icon
+    //this->drawCircle(_cadence_x-20, _cadence_y+5, 3, ST7735_WHITE);
+    //this->drawLine(_cadence_x-17, _cadence_y+2, _cadence_x-23, _cadence_y+8, ST7735_WHITE);
 }
 void BikeScreen::drawPulse(uint8_t bpm)
 {
     this->setTextColor(ST7735_WHITE);
+    this->setTextSize(3);
     this->setCursor(_pulse_x, _pulse_y);
-    this->setTextSize(2);
     this->print(bpm);
     this->setTextSize(1);
-    this->print(" b/min");
+    this->setCursor(_pulse_x+50, _pulse_y+13);
+    this->print("b/min");
+    //icon
 }
 void BikeScreen::drawOdo(uint64_t dist)
 {
     this->setTextColor(ST7735_WHITE);
     this->setCursor(_odo_x, _odo_y);
-    this->setTextSize(2);
+    this->setTextSize(3);
     //this->print(dist);
     this->setTextSize(1);
-    this->print(" km");
+    this->print("km");
 }
 void BikeScreen::drawTrip(uint64_t dist)
 {
     this->setTextColor(ST7735_WHITE);
     this->setCursor(_trip_x, _trip_y);
-    this->setTextSize(2);
+    this->setTextSize(3);
     //this->print(dist);
     this->setTextSize(1);
-    this->print(" km");
+    this->print("km");
 }
 //sets
 void BikeScreen::setTime(int16_t ntime_x, int16_t ntime_y)

@@ -62,17 +62,17 @@ void setup(void)
   tft.println(WiFi.localIP().toString().c_str());
   delay(5000);
   //SCREEN INIT
-  uint16_t xs[] = {0, 0, 0}, 
-          ys[] = {0, 25, 105},
-          widths[] = {128, 128, 128}, 
-          heights[] = {25, 80, 55};
-  tft.fillScreen(ST7735_BLUE);
-  tft.drawFrame(3, xs, ys, widths, heights);
+  uint16_t xs[] = {0, 0, 0, 0}, 
+          widths[] = {128, 128, 128, 128},
+          ys[] = {0, 24, 73, 117},
+          heights[] = {24, 50, 45, 40};
+  tft.fillScreen(ST7735_BLACK);
+  tft.drawFrame(4, xs, ys, widths, heights);
   //tft.drawTime();
   //tft.drawDate();
   tft.drawBattery(90);
   tft.drawSpeed(15);
-  tft.drawCadence(13500);
+  tft.drawCadence(120);
   tft.drawPulse(85);
   /*tft.fillScreen(ST7735_BLACK);
   tft.drawRect(0,0,128,25,ST7735_WHITE);
