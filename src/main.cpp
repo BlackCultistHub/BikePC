@@ -1,6 +1,7 @@
 //#include <Arduino.h>
 //#include <Adafruit_GFX.h>      // include Adafruit graphics library
-#include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
+//#include <Adafruit_ST7735.h>   // include Adafruit ST7735 TFT library
+#include <bikeScreen.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
  
@@ -15,9 +16,6 @@
 //***********[ Defines ]***********
 #define MAX_DATA_ARGUMENT_AMOUNT 32
 
-//**********[ Class ]*************
-
-
 //***********[ Predefined Values ]***********
 const char* ssid = "InterZet610_2.4";
 const char* password = "0987654321000";
@@ -29,8 +27,8 @@ bool update = false;
 String temp;
 
 //***********[ Object Inits ]***********
-Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST); //tft screen object
-ESP8266WebServer server(8080);
+BikeScreen tft(TFT_CS, TFT_DC, TFT_RST); //tft screen object
+ESP8266WebServer server(80);
 
 //***********[ Function Prototypes ]***********
 void refresh(Adafruit_ST7735*);
@@ -62,35 +60,48 @@ void setup(void)
   tft.print("Web server started,\nlocal ip is:\n");
   delay(1000);
   tft.println(WiFi.localIP().toString().c_str());
+  delay(5000);
   //SCREEN INIT
-  tft.fillScreen(ST7735_BLACK);
+  uint16_t xs[] = {0, 0, 0}, 
+          ys[] = {0, 25, 105},
+          widths[] = {128, 128, 128}, 
+          heights[] = {25, 80, 55};
+  tft.fillScreen(ST7735_BLUE);
+  tft.drawFrame(3, xs, ys, widths, heights);
+  //tft.drawTime();
+  //tft.drawDate();
+  tft.drawBattery(90);
+  tft.drawSpeed(15);
+  tft.drawCadence(13500);
+  tft.drawPulse(85);
+  /*tft.fillScreen(ST7735_BLACK);
   tft.drawRect(0,0,128,25,ST7735_WHITE);
   tft.drawRect(0,25,128,80,ST7735_WHITE);
   tft.drawRect(0,105,128,55,ST7735_WHITE);
   tft.setTextColor(ST7735_WHITE);
-  tft.setCursor(5, 5);
+  tft.setCursor(5, 5); //time
   tft.setTextSize(1);
   tft.println("12:00");
-  tft.setTextSize(0);
+  tft.setTextSize(0); //date
   tft.setCursor(5, 15);
   tft.println("01.10.19");
-  tft.setCursor(105,5);
+  tft.setCursor(105,5); //batt
   tft.print("90%");
-  tft.setTextSize(5);
-  tft.setCursor(20,50);
+  tft.setTextSize(5); //speed
+  tft.setCursor(20,50); 
   tft.print("19");
   tft.setTextSize(1);
   tft.println(" km/h");
-  tft.setCursor(5, 110);
+  tft.setCursor(5, 110); //rpm
   tft.setTextSize(2);
   tft.print("o 12'000");
   tft.setTextSize(1);
   tft.println(" rpm");
-  tft.setTextSize(2);
+  tft.setTextSize(2); //hb
   tft.setCursor(5, 140);
   tft.print("H 90");
   tft.setTextSize(1);
-  tft.println(" b/min");
+  tft.println(" b/min");*/
   //HANDLERS
   server.onNotFound(handler404);
   server.on("/", handlerIndex);

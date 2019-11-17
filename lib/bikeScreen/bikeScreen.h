@@ -30,30 +30,30 @@ class BikeScreen : public Adafruit_ST7735
     void setOdo(int16_t nodo_x, int16_t nodo_y);
     void setTrip(int16_t ntrip_x, int16_t ntrip_y);
     //gets
-    void getTime(uint16_t* time) {time[0]=time_x; time[1]=time_y;}
-    void getDate(uint16_t* date) {date[0]=date_x; date[1]=date_y;}
-    void getBattery(uint16_t* batt) {batt[0]=batt_x; batt[1]=batt_y;}
-    void getSpeed(uint16_t* speed) {speed[0]=speed_x; speed[1]=speed_y;}
-    void getCadence(uint16_t* cadence) {cadence[0]=cadence_x; cadence[1]=cadence_y;}
-    void getPulse(uint16_t* pulse) {pulse[0]=pulse_x; pulse[1]=pulse_y;}
-    void getOdo(uint16_t* odo) {odo[0]=odo_x; odo[1]=odo_y;}
-    void getTrip(uint16_t* trip) {trip[0]=trip_x; trip[1]=trip_y;}
-  protected:
-    int16_t time_x;
-    int16_t time_y;
-    int16_t date_x;
-    int16_t date_y;
-    int16_t batt_x;
-    int16_t batt_y;
-    int16_t speed_x;
-    int16_t speed_y;
-    int16_t cadence_x;
-    int16_t cadence_y;
-    int16_t pulse_x;
-    int16_t pulse_y;
-    int16_t odo_x;
-    int16_t odo_y;
-    int16_t trip_x;
-    int16_t trip_y;
+    void getTime(uint16_t* time) {time[0]=_time_x; time[1]=_time_y;}
+    void getDate(uint16_t* date) {date[0]=_date_x; date[1]=_date_y;}
+    void getBattery(uint16_t* batt) {batt[0]=_batt_x; batt[1]=_batt_y;}
+    void getSpeed(uint16_t* speed) {speed[0]=_speed_x; speed[1]=_speed_y;}
+    void getCadence(uint16_t* cadence) {cadence[0]=_cadence_x; cadence[1]=_cadence_y;}
+    void getPulse(uint16_t* pulse) {pulse[0]=_pulse_x; pulse[1]=_pulse_y;}
+    void getOdo(uint16_t* odo) {odo[0]=_odo_x; odo[1]=_odo_y;}
+    void getTrip(uint16_t* trip) {trip[0]=_trip_x; trip[1]=_trip_y;}
+  private:
+    int16_t _time_x = 5;
+    int16_t _time_y = 5;
+    int16_t _date_x = 5;
+    int16_t _date_y = 15;
+    int16_t _batt_x = 105;
+    int16_t _batt_y = 5;
+    int16_t _speed_x = 20;
+    int16_t _speed_y = 50;
+    int16_t _cadence_x = 5;
+    int16_t _cadence_y = 110;
+    int16_t _pulse_x = 5;
+    int16_t _pulse_y = 140;
+    int16_t _odo_x = 20;
+    int16_t _odo_y = 50;
+    int16_t _trip_x = 20;
+    int16_t _trip_y = 70;
 };
 #endif // _BIKE_SCREENH_

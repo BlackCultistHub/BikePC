@@ -1,0 +1,15 @@
+{
+    "name": "bikeScreen",
+    "keywords": "TFT, ST7735, SPI",
+    "description": "A library for bike screen based on Adafruit's lib TFT ST7735",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/marcoschwartz/bikeScreen.git"
+    },
+    "frameworks": "arduino",
+    "platforms":
+    [
+      "atmelavr"
+    ]
+  }
