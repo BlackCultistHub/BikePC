@@ -4,6 +4,8 @@
 #include <bikeScreen.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <WiFiUdp.h>
+#include <NTPClient.h>
  
 //***********[ ST7735 TFT module connections ]***********
 #define TFT_RST   D4     // TFT RST pin is connected to NodeMCU pin D4 (GPIO2)
@@ -22,9 +24,12 @@ const char* password = "0987654321000";
 String page = "";
 String args[MAX_DATA_ARGUMENT_AMOUNT];
 String argVals[MAX_DATA_ARGUMENT_AMOUNT];
+String pulseRaw;
 int argLen = 0;
 bool update = false;
 String temp;
+const uint32_t utcOffsetInSeconds = 10800;
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 //***********[ Object Inits ]***********
 BikeScreen tft(TFT_CS, TFT_DC, TFT_RST); //tft screen object
@@ -42,8 +47,11 @@ void setup(void)
   Serial.begin(9600);
   delay(10);
   Serial.println("");
-  page += String("<h1>ESP8266 Web Server</h1>\n");
-  tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
+  // Define NTP Client to get time
+  WiFiUDP ntpUDP;
+  NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", utcOffsetInSeconds);
+  // initialize a ST7735S chip, black tab
+  tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST7735_BLACK);
   delay(500);
   tft.printf("Connecting to\n%s\n", ssid);
@@ -68,40 +76,14 @@ void setup(void)
           heights[] = {24, 50, 45, 40};
   tft.fillScreen(ST7735_BLACK);
   tft.drawFrame(4, xs, ys, widths, heights);
-  //tft.drawTime();
-  //tft.drawDate();
+  timeClient.begin();
+  timeClient.update();
+  tft.drawTime(timeClient.getHours(), timeClient.getMinutes());
+  tft.drawDate(daysOfTheWeek[timeClient.getDay()]);
   tft.drawBattery(90);
   tft.drawSpeed(15);
   tft.drawCadence(120);
   tft.drawPulse(85);
-  /*tft.fillScreen(ST7735_BLACK);
-  tft.drawRect(0,0,128,25,ST7735_WHITE);
-  tft.drawRect(0,25,128,80,ST7735_WHITE);
-  tft.drawRect(0,105,128,55,ST7735_WHITE);
-  tft.setTextColor(ST7735_WHITE);
-  tft.setCursor(5, 5); //time
-  tft.setTextSize(1);
-  tft.println("12:00");
-  tft.setTextSize(0); //date
-  tft.setCursor(5, 15);
-  tft.println("01.10.19");
-  tft.setCursor(105,5); //batt
-  tft.print("90%");
-  tft.setTextSize(5); //speed
-  tft.setCursor(20,50); 
-  tft.print("19");
-  tft.setTextSize(1);
-  tft.println(" km/h");
-  tft.setCursor(5, 110); //rpm
-  tft.setTextSize(2);
-  tft.print("o 12'000");
-  tft.setTextSize(1);
-  tft.println(" rpm");
-  tft.setTextSize(2); //hb
-  tft.setCursor(5, 140);
-  tft.print("H 90");
-  tft.setTextSize(1);
-  tft.println(" b/min");*/
   //HANDLERS
   server.onNotFound(handler404);
   server.on("/", handlerIndex);
@@ -114,14 +96,22 @@ void loop(void)
   server.handleClient();
   if (update)
   {
-    String message;
+    //INTERRUPT FOR TIME UPDATE
+
+    if (pulseRaw)
+    {
+      char temp[2];
+      strcpy(temp, pulseRaw.c_str());
+      tft.drawPulse(atoi(temp));
+    }
+    //String message;
     //tft.fillScreen(ST7735_BLACK);
     //tft.setCursor(0,0);
     //tft.printf("Client IP:\n%s\n", server.client().remoteIP().toString().c_str());
     //tft.println("List of args:");
     
-    for (uint8_t i = 0; i < argLen; i++)
-      message += args[i]+" = "+argVals[i]+"\n";
+    //for (uint8_t i = 0; i < argLen; i++)
+    //  message += args[i]+" = "+argVals[i]+"\n";
     /*message += "List of -||- +1:\n";
     for (uint8_t i = 0; i < argLen; i++)
     {
@@ -165,6 +155,10 @@ void handlerIndex()
 
 void handlerData()
 {
+  if (server.hasArg("pulse"))
+    pulseRaw = server.arg("pulse");
+  else
+    pulseRaw = "0";
   for (uint8_t i = 0; i < MAX_DATA_ARGUMENT_AMOUNT; i++)
   {
     args[i] = "0";

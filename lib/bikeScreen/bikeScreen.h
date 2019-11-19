@@ -11,9 +11,10 @@ class BikeScreen : public Adafruit_ST7735
   int8_t sclk, int8_t rst);
     //~BikeScreen(){}
     //draws
+    void drawPixelPic(String* pic, uint16_t x, uint16_t y, uint16_t color);
     void drawFrame(uint16_t amount, uint16_t* x, uint16_t* y, uint16_t* widths, uint16_t* heights);
-    void drawTime(int time/*time type*/);
-    void drawDate(int date/*date type*/);
+    void drawTime(int timeH, int timeM);
+    void drawDate(char* date);
     void drawBattery(uint8_t charge);
     void drawSpeed(uint8_t speed);
     void drawCadence(uint16_t rpm);
@@ -40,9 +41,9 @@ class BikeScreen : public Adafruit_ST7735
     void getTrip(uint16_t* trip) {trip[0]=_trip_x; trip[1]=_trip_y;}
   private:
     int16_t _time_x = 5;
-    int16_t _time_y = 5;
+    int16_t _time_y = 4;
     int16_t _date_x = 5;
-    int16_t _date_y = 15;
+    int16_t _date_y = 13;
     int16_t _batt_x = 95;
     int16_t _batt_y = 9;
     int16_t _speed_x = 25;
@@ -55,5 +56,54 @@ class BikeScreen : public Adafruit_ST7735
     int16_t _odo_y = 50;
     int16_t _trip_x = 20;
     int16_t _trip_y = 70;
+    //icons
+    String _cadenceIcon = String("")+
+    "----********--**\n"+
+    "----********--**\n"+
+    "--**--------**--\n"+
+    "--**--------**--\n"+
+    "**--------**--**\n"+
+    "**--------**--**\n"+
+    "**------**----**\n"+
+    "**------**----**\n"+
+    "**----**------**\n"+
+    "**----**------**\n"+
+    "**--**--------**\n"+
+    "**--**--------**\n"+
+    "--**--------**--\n"+
+    "--**--------**--\n"+
+    "**--********----\n"+
+    "**--********----\n";
+    String _pulseIcon = String("")+
+    "--****----****--\n"+
+    "-******--******-\n"+
+    "-******--******-\n"+
+    "****************\n"+
+    "****************\n"+
+    "-**************-\n"+
+    "-**************-\n"+
+    "--************--\n"+
+    "---**********---\n"+
+    "----********----\n"+
+    "-----******-----\n"+
+    "------****------\n"+
+    "-------**-------\n";
+    String _speedIcon = String("")+
+    "*--------*\n"+
+    "**------**\n"+
+    "**------**\n"+
+    "**------**\n"+
+    "***----***\n"+
+    "***----***\n"+
+    "***----***\n"+
+    "***----***\n"+
+    "***----***\n"+
+    "-***--***-\n"+
+    "-***--***-\n"+
+    "--**--**--\n"+
+    "--******--\n"+
+    "---****---\n"+
+    "---****---\n"+
+    "----**----\n";
 };
 #endif // _BIKE_SCREENH_
