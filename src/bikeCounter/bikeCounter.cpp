@@ -31,7 +31,7 @@ void bikeCounter::init()
 }
 
 //Starter funcs
-bool bikeCounter::initSD(const uint8_t cs_pin, String* errormsg = nullptr)
+bool bikeCounter::initSD(const uint8_t cs_pin, String* errormsg)
 {
         if (!SD.begin(cs_pin))
     {
