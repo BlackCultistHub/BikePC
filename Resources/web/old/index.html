@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ESP8266 BikeComputer</title>
+        <style> a {text-decoration: none; color: blue;} </style>
+    </head>
+    <body>
+        <table align=center>
+            <tr>
+                <td><h1>ESP8266 BikeComputer Setup</h1></td>
+            </tr>
+            <tr>
+                <td><h3><a href="/Stats">Show statistics</a></h3></td>
+            </tr>
+            <tr>
+                <td><h3><a href="/Info">Visit info page</a></h3></td>
+            </tr>
+            <tr>
+                <td><h3><a href="/get_settings">Get settings</a></h3></td>
+            </tr>
+            <tr>
+                <td><h3>Switch connection mode</h3></td>
+            </tr>
+            <tr>
+                <td>
+                    <form action="/switch_mode" method="POST">
+                        <input type="submit" value="Switch"/>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td><br><br><br><br><br><br></td>
+            </tr>
+            <tr>
+                <td><h3>Change time&date settings:</h3></td>
+            </tr>
+            <tr>
+                <td>
+                    <details>
+                        <summary>Settings</summary>
+                        <p><form action="/setup" method="POST">
+                            <input type="hidden" name="SetType" value="TimeDate">
+                            <b>Time: </b><input type="time" size="30" name="time" placeholder="Set time..." autocomplete="off" required>
+                            <p><b>Date: </b><input type="date" size="30" name="date" placeholder="Set date..." autocomplete="off" required></p>
+                            <p><input type="submit" value="Change Time&Date settings"/></p>
+                        </form></p>
+                    </details>
+                </td>
+            </tr>
+            <tr>
+                <td><h3>Change Access Point settings:</h3></td>
+            </tr>
+            <tr>
+                <td>
+                    <details>
+                        <summary>Settings</summary>
+                        <p><form action="/setup" method="POST">
+                            <input type="hidden" name="SetType" value="AP">
+                            <b>SSID: </b><input type="text" size="30" name="SSID" placeholder="Type your AP SSID here..." autocomplete="off" required>
+                            <p><details>
+                                <summary><b>What is SSID?</b></summary>
+                                <b>SSID</b> is simply a symbolyc name of a WiFi Access Point.
+                            </details></p>
+                            <p><b>Password: </b><input type="password" size="30" name="password" placeholder="Type your AP password here..." autocomplete="off" required></p>
+                            <p><input type="submit" value="Change AP settings"/></p>
+                        </form></p>
+                    </details>
+                </td>
+            </tr>
+            <tr>
+                <td><h3>Change WiFi client settings</h3></td>
+            </tr>
+            <tr>
+                <td>
+                    <details>
+                        <summary>Settings</summary>
+                        <p><form action="/setup">
+                            <input type="hidden" name="SetType" value="Client">
+                            <b>SSID: </b><input type="text" size="30" name="SSID" placeholder="Type your WiFi SSID here..." autocomplete="off" required>
+                            <p><details>
+                                <summary><b>What is SSID?</b></summary>
+                                <b>SSID</b> is simply a symbolyc name of a WiFi Access Point.
+                            </details></p>
+                            <p><b>Password: </b><input type="password" size="30" name="password" placeholder="Type your WiFi password here..." autocomplete="off" required></p>
+                            <p><input type="submit" value="Change Client settings"/></p>
+                        </form></p>
+                    </details>
+                </td>
+            </tr>
+            <tr>
+                <td><br><br><br><br><br><br><br></td>
+            </tr>
+            <tr>
+                <td>
+                    <details>
+                        <summary><b>Factory reset</b></summary>
+                        <details>
+                            <summary><b style="color:darkred;">Are you sure?</b></summary>
+                            <br><br>
+                            <b style="color:red;">ALL DATA WILL BE LOST</b>
+                            <br><br>
+                            <form action="/factory_reset" method="POST">
+                                <input type="hidden" name="Confirm" value="true">
+                                <input type="submit" value="Reset to factory settings.">
+                            </form>
+                        </details>
+                    </details>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

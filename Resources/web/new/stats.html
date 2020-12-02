@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>BikePC Статистика</title>
+		<style>
+			a{
+				text-decoration: none;
+				color: black;
+			}
+			.button{
+				width:75%;
+				border:1px solid rgba(255,255,255,0.50);
+				background-color: rgba(255,255,255,0.50);
+				text-align: center;
+			}
+			.fill{
+				height: 7px
+			}
+			.block{
+				border:3px solid black;
+				border-bottom: none;
+				text-align: center;
+				padding-bottom: 5%
+			}
+		</style>
+	</head>
+    <body>
+		<div style="width: 99%; text-align: center"><h1>BikePC Статистика</h1></div>
+		<div style="text-align: center"><h2>Батарея: xx%</h2></div>
+		<div style="text-align: center"><h2>dd/mm/yy</h2></div>
+		<div style="text-align: center"><h2>hh:mm Пятница</h2></div>
+		<div style="padding-left: 20%; padding-top: 1%; padding-bottom: 1%; background-color: #969696;">
+			<a href="/"><div class="button"><h3>Домой</h3></div></a>
+			<div class="fill"></div>
+			<a href="/stats"><div class="button"><h3>Статистика</h3></div></a>
+			<div class="fill"></div>
+			<a href="/get_settings"><div class="button"><h3>Настройки</h3></div></a>
+			<div class="fill"></div>
+			<a href="/info"><div class="button"><h3>Инфо</h3></div></a>
+		</div>
+		<div class="block">
+			<div>
+				<h2>Поездка Х.</h2>
+			</div>
+			<div>
+				<h2>Расстояние: X км</h2>
+			</div>
+			<div>
+				<h2>Время поездки: X ч, X мин</h2>
+			</div>
+			<div>
+				<h2>Средняя скорость: X км/ч</h2>
+			</div>
+			<div>
+				<h2>Средний пульс: X уд/м</h2>
+			</div>
+			<div>
+				<h2>Средний каденс: X об/мин</h2>
+			</div>
+			<div>
+				<h2>ODO: X км</h2>
+			</div>
+		</div>
+	</body>
+</html>
