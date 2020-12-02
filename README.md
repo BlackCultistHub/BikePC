@@ -7,10 +7,11 @@ Not modular yet.
 BUILDING
 --------
 You'll need:
-1. VS Code
-2. PlatformIO plugin
-3. These libs:
- a) Adafruit ST7735 and ST7789 Library
- b) NTPClient
- c) Adafruit BusIO
- d) ESP8266TimerInterrupt
+1.VS Code 
+2.PlatformIO plugin
+3.These libs:
+
+      a) Adafruit ST7735 and ST7789 Library
+      b) NTPClient
+      c) Adafruit BusIO
+      d) ESP8266TimerInterrupt
