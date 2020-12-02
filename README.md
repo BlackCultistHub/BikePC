@@ -8,12 +8,12 @@ Code is not modular yet.
 
 > Note that this is the main module that comes to your bike.
 
-Pulsometer module that will connect to this main module is not ready yet so pulse will be always '0'
+> Pulsometer module that will connect to this main module is not ready yet so pulse will be always '0'
 
 Schematic
 ---------
 Current schematic of main module:
-![Main_module](https://github.com/BlackCultistHub/ESP/blob/master/Resources/schematic.jpg?raw=true)
+![Main_module](https://github.com/BlackCultistHub/ESP/blob/master/Resources/shematic.jpg?raw=true)
 
 Building
 --------
